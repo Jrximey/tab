@@ -1,0 +1,1314 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nexus 起始页</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+        }
+        
+        :root {
+            --primary-color: rgba(255, 255, 255, 0.2);
+            --secondary-color: rgba(255, 255, 255, 0.15);
+            --hover-color: rgba(255, 255, 255, 0.3);
+            --text-color: #ffffff;
+            --blur-strength: blur(12px);
+            --transition-speed: 0.3s;
+        }
+        
+        body {
+            overflow: hidden;
+            height: 100vh;
+            color: var(--text-color);
+            transition: background-color 0.5s ease;
+            font-weight: 400;
+        }
+        
+        #background-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -2;
+            transition: opacity 1s ease;
+        }
+        
+        #background-container video,
+        #background-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.4);
+            z-index: -1;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 30px;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 0;
+            animation: fadeIn 1s ease;
+        }
+        
+        .logo {
+            font-size: 28px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .logo-icon {
+            color: #6dd5ed;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+        
+        .logo-icon:hover {
+            transform: rotate(30deg);
+        }
+        
+        .settings {
+            display: flex;
+            gap: 15px;
+        }
+        
+        .settings button {
+            background: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: var(--text-color);
+            padding: 12px 20px;
+            border-radius: 50px;
+            cursor: pointer;
+            backdrop-filter: var(--blur-strength);
+            transition: all var(--transition-speed) ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 500;
+        }
+        
+        .settings button:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            transform: translateY(-40px);
+        }
+        
+        .time {
+            font-size: 90px;
+            font-weight: 300;
+            margin-bottom: 10px;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+            animation: fadeIn 1s ease;
+            letter-spacing: -2px;
+        }
+        
+        .date {
+            font-size: 22px;
+            margin-bottom: 50px;
+            opacity: 0.9;
+            text-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            animation: fadeIn 1s ease 0.2s both;
+            font-weight: 400;
+        }
+        
+        .search-container {
+            width: 100%;
+            max-width: 700px;
+            position: relative;
+            margin-bottom: 60px;
+            animation: fadeIn 1s ease 0.4s both;
+            z-index: 10;
+        }
+        
+        .search-box {
+            width: 100%;
+            padding: 22px;
+            padding-left: 65px;
+            border: none;
+            border-radius: 50px;
+            font-size: 18px;
+            background: var(--primary-color);
+            backdrop-filter: var(--blur-strength);
+            color: var(--text-color);
+            transition: all var(--transition-speed) ease;
+            box-shadow: 0 5px 25px rgba(0, 0, 0, 0.2);
+            font-weight: 400;
+        }
+        
+        .search-box:focus {
+            outline: none;
+            background: var(--hover-color);
+            transform: scale(1.02);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.25);
+        }
+        
+        .search-box::placeholder {
+            color: rgba(255, 255, 255, 0.8);
+        }
+        
+        .search-icon {
+            position: absolute;
+            left: 25px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 22px;
+            color: rgba(255, 255, 255, 0.9);
+        }
+        
+        .search-options {
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: transparent;
+            border: none;
+            color: var(--text-color);
+            font-size: 20px;
+            cursor: pointer;
+            transition: transform var(--transition-speed) ease;
+            z-index: 11;
+        }
+        
+        .search-options:hover {
+            transform: translateY(-50%) rotate(180deg);
+        }
+        
+        .websites-container {
+            width: 100%;
+            max-width: 1000px;
+            animation: fadeIn 1s ease 0.6s both;
+        }
+        
+        .websites-title {
+            font-size: 18px;
+            margin-bottom: 20px;
+            padding-left: 10px;
+            opacity: 0.9;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 500;
+        }
+        
+        .websites {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+            gap: 25px;
+            width: 100%;
+        }
+        
+        .website {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            cursor: pointer;
+            transition: all var(--transition-speed) ease;
+            border-radius: 16px;
+            padding: 18px 12px;
+            background: var(--secondary-color);
+            backdrop-filter: var(--blur-strength);
+            position: relative;
+        }
+        
+        .website:hover {
+            transform: scale(1.15);
+            background: var(--hover-color);
+            z-index: 10;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+        }
+        
+        .website-edit {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            font-size: 12px;
+            opacity: 0;
+            transition: opacity var(--transition-speed) ease;
+            color: rgba(255, 255, 255, 0.7);
+        }
+        
+        .website:hover .website-edit {
+            opacity: 1;
+        }
+        
+        .website-icon {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            margin-bottom: 12px;
+            background: var(--primary-color);
+            transition: all var(--transition-speed) ease;
+            overflow: hidden;
+        }
+        
+        .website-icon img {
+            width: 60%;
+            height: 60%;
+            object-fit: contain;
+        }
+        
+        .website:hover .website-icon {
+            transform: scale(1.1);
+            background: var(--hover-color);
+        }
+        
+        .website-name {
+            font-size: 13px;
+            text-align: center;
+            max-width: 80px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            font-weight: 400;
+        }
+        
+        .dropdown {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            margin-top: 10px;
+            background: var(--primary-color);
+            backdrop-filter: var(--blur-strength);
+            border-radius: 16px;
+            padding: 15px;
+            display: none;
+            z-index: 100;
+            min-width: 220px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .dropdown.show {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+        
+        .dropdown-title {
+            font-size: 14px;
+            margin-bottom: 12px;
+            opacity: 0.8;
+            padding-left: 5px;
+            font-weight: 500;
+        }
+        
+        .dropdown-item {
+            padding: 12px 15px;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .dropdown-item:hover {
+            background: var(--hover-color);
+        }
+        
+        .dropdown-item.active {
+            background: var(--hover-color);
+            position: relative;
+        }
+        
+        .dropdown-item.active::after {
+            content: "✓";
+            position: absolute;
+            right: 15px;
+        }
+        
+        .background-options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        
+        .background-option {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 15px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .background-option:hover {
+            background: var(--hover-color);
+        }
+        
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .modal.show {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .modal-content {
+            background: rgba(30, 30, 40, 0.95);
+            backdrop-filter: var(--blur-strength);
+            border-radius: 20px;
+            padding: 30px;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            transform: translateY(20px);
+            transition: transform 0.3s ease;
+        }
+        
+        .modal.show .modal-content {
+            transform: translateY(0);
+        }
+        
+        .modal-title {
+            font-size: 24px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 600;
+        }
+        
+        .modal-close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-size: 24px;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+        
+        .modal-close:hover {
+            transform: rotate(90deg);
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 14px;
+            opacity: 0.8;
+            font-weight: 500;
+        }
+        
+        .form-group input {
+            width: 100%;
+            padding: 14px;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--text-color);
+            font-size: 16px;
+            font-weight: 400;
+        }
+        
+        .form-group input:focus {
+            outline: none;
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+        
+        .modal-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 15px;
+            margin-top: 30px;
+        }
+        
+        .modal-btn {
+            padding: 12px 25px;
+            border-radius: 12px;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 500;
+            transition: all 0.2s ease;
+        }
+        
+        .modal-btn.primary {
+            background: linear-gradient(135deg, #6dd5ed, #6c5ce7);
+            color: white;
+        }
+        
+        .modal-btn.secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--text-color);
+        }
+        
+        .modal-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .credit {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 12px;
+            opacity: 0.7;
+            animation: fadeIn 1s ease 0.8s both;
+        }
+        
+        .customization-panel {
+            position: fixed;
+            top: 50%;
+            right: -300px;
+            transform: translateY(-50%);
+            width: 300px;
+            background: rgba(30, 30, 40, 0.9);
+            backdrop-filter: var(--blur-strength);
+            padding: 20px;
+            border-radius: 15px 0 0 15px;
+            box-shadow: -5px 0 25px rgba(0, 0, 0, 0.2);
+            transition: right 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 999;
+        }
+        
+        .customization-panel.open {
+            right: 0;
+        }
+        
+        .panel-toggle {
+            position: absolute;
+            left: -40px;
+            top: 20px;
+            width: 40px;
+            height: 40px;
+            background: rgba(30, 30, 40, 0.9);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 10px 0 0 10px;
+            cursor: pointer;
+            box-shadow: -5px 0 15px rgba(0, 0, 0, 0.15);
+        }
+        
+        .panel-title {
+            font-size: 18px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 600;
+        }
+        
+        .panel-section {
+            margin-bottom: 25px;
+        }
+        
+        .panel-section-title {
+            font-size: 16px;
+            margin-bottom: 12px;
+            opacity: 0.9;
+            font-weight: 500;
+        }
+        
+        .bg-thumbnails {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+        }
+        
+        .bg-thumbnail {
+            height: 60px;
+            border-radius: 8px;
+            overflow: hidden;
+            cursor: pointer;
+            opacity: 0.7;
+            transition: all 0.2s ease;
+        }
+        
+        .bg-thumbnail:hover, .bg-thumbnail.active {
+            opacity: 1;
+            transform: scale(1.05);
+        }
+        
+        .bg-thumbnail img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        /* 图标选择网格 */
+        .icon-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 15px;
+            margin-top: 15px;
+            max-height: 200px;
+            overflow-y: auto;
+            padding-right: 5px;
+        }
+        
+        .icon-option {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--primary-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            color: #6dd5ed;
+        }
+        
+        .icon-option:hover, .icon-option.selected {
+            background: var(--hover-color);
+            transform: scale(1.1);
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .time {
+                font-size: 60px;
+            }
+            
+            .date {
+                font-size: 18px;
+            }
+            
+            .websites {
+                grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
+                gap: 15px;
+            }
+            
+            .website {
+                padding: 12px 8px;
+            }
+            
+            .website-icon {
+                width: 35px;
+                height: 35px;
+                font-size: 16px;
+            }
+            
+            .search-box {
+                padding: 18px 18px 18px 50px;
+                font-size: 16px;
+            }
+            
+            .container {
+                padding: 20px;
+            }
+            
+            .settings button {
+                padding: 10px 15px;
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="background-container">
+        <div class="overlay"></div>
+        <!-- 背景将由JavaScript动态添加 -->
+    </div>
+
+    <div class="container">
+        <header>
+            <div class="logo">
+                <i class="fas fa-compass logo-icon" id="logo-icon"></i>
+                <span>Nexus 起始页</span>
+            </div>
+            <div class="settings">
+                <button id="background-toggle">
+                    <i class="fas fa-image"></i> 更换背景
+                </button>
+                <button id="customize-toggle">
+                    <i class="fas fa-sliders-h"></i> 自定义
+                </button>
+            </div>
+        </header>
+
+        <div class="main-content">
+            <div class="time" id="time">12:00</div>
+            <div class="date" id="date">2023年6月15日 星期四</div>
+
+            <div class="search-container">
+                <i class="fas fa-search search-icon"></i>
+                <input type="text" class="search-box" placeholder="搜索或输入网址" id="search-input">
+                <div class="search-options" id="search-options">
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                
+                <div class="dropdown" id="search-dropdown">
+                    <div class="dropdown-title">选择搜索引擎</div>
+                    <div class="dropdown-item active" data-engine="google">
+                        <i class="fab fa-google"></i> Google
+                    </div>
+                    <div class="dropdown-item" data-engine="bing">
+                        <i class="fab fa-microsoft"></i> Bing
+                    </div>
+                    <div class="dropdown-item" data-engine="baidu">
+                        <i class="fas fa-paw"></i> 百度
+                    </div>
+                    <div class="dropdown-item" data-engine="duckduckgo">
+                        <i class="fas fa-duck"></i> DuckDuckGo
+                    </div>
+                </div>
+            </div>
+
+            <div class="websites-container">
+                <div class="websites-title">
+                    <i class="fas fa-th"></i> 常用网站
+                </div>
+                <div class="websites" id="websites">
+                    <!-- 网站将由JavaScript动态生成 -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="credit">
+        背景来源: Unsplash - 设计: Nexus 起始页
+    </div>
+
+    <!-- 自定义面板 -->
+    <div class="customization-panel" id="customization-panel">
+        <div class="panel-toggle" id="panel-toggle">
+            <i class="fas fa-cog"></i>
+        </div>
+        
+        <h2 class="panel-title"><i class="fas fa-palette"></i> 自定义设置</h2>
+        
+        <div class="panel-section">
+            <h3 class="panel-section-title">背景选择</h3>
+            <div class="bg-thumbnails" id="bg-thumbnails">
+                <!-- 背景缩略图将由JavaScript动态生成 -->
+            </div>
+        </div>
+        
+        <div class="panel-section">
+            <h3 class="panel-section-title">添加自定义背景</h3>
+            <input type="file" id="bg-upload" accept="image/*,video/*" style="display: none;">
+            <button class="modal-btn secondary" style="width: 100%;" id="add-bg-btn">
+                <i class="fas fa-upload"></i> 上传自定义背景
+            </button>
+            <p style="font-size: 12px; margin-top: 10px; opacity: 0.7;">支持图片和视频文件</p>
+        </div>
+        
+        <div class="panel-section">
+            <h3 class="panel-section-title">界面设置</h3>
+            <div class="form-group">
+                <label>模糊强度</label>
+                <input type="range" min="0" max="20" value="12" id="blur-range">
+            </div>
+            <div class="form-group">
+                <label>透明度</label>
+                <input type="range" min="0" max="100" value="20" id="opacity-range">
+            </div>
+        </div>
+    </div>
+
+    <!-- 编辑网站模态框 -->
+    <div class="modal" id="edit-modal">
+        <div class="modal-content">
+            <h2 class="modal-title"><i class="fas fa-edit"></i> 编辑网站</h2>
+            <div class="modal-close" id="edit-modal-close">
+                <i class="fas fa-times"></i>
+            </div>
+            
+            <div class="form-group">
+                <label for="edit-name">网站名称</label>
+                <input type="text" id="edit-name" placeholder="例如: Google">
+            </div>
+            
+            <div class="form-group">
+                <label for="edit-url">网站网址</label>
+                <input type="text" id="edit-url" placeholder="例如: https://www.google.com">
+            </div>
+            
+            <div class="form-group">
+                <label for="edit-icon">图标链接</label>
+                <input type="text" id="edit-icon" placeholder="例如: https://example.com/icon.png">
+                <p style="font-size: 12px; margin-top: 5px; opacity: 0.7;">输入图标图片的URL地址</p>
+            </div>
+            
+            <div class="modal-actions">
+                <button class="modal-btn secondary" id="edit-cancel">取消</button>
+                <button class="modal-btn primary" id="edit-save">保存</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 图标选择模态框 -->
+    <div class="modal" id="icon-modal">
+        <div class="modal-content">
+            <h2 class="modal-title"><i class="fas fa-icons"></i> 选择图标</h2>
+            <div class="modal-close" id="icon-modal-close">
+                <i class="fas fa-times"></i>
+            </div>
+            
+            <div class="form-group">
+                <label>选择预设图标</label>
+                <div class="icon-grid" id="icon-grid">
+                    <!-- 图标选项将由JavaScript动态生成 -->
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="custom-icon-url">或输入自定义图标URL</label>
+                <input type="text" id="custom-icon-url" placeholder="例如: https://example.com/icon.png">
+            </div>
+            
+            <div class="modal-actions">
+                <button class="modal-btn secondary" id="icon-cancel">取消</button>
+                <button class="modal-btn primary" id="icon-save">保存</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 更新时间
+        function updateTime() {
+            const now = new Date();
+            const timeElement = document.getElementById('time');
+            const dateElement = document.getElementById('date');
+            
+            const hours = now.getHours().toString().padStart(2, '0');
+            const minutes = now.getMinutes().toString().padStart(2, '0');
+            
+            const days = ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'];
+            const months = ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'];
+            
+            timeElement.textContent = `${hours}:${minutes}`;
+            dateElement.textContent = `${now.getFullYear()}年 ${months[now.getMonth()]} ${now.getDate()}日 ${days[now.getDay()]}`;
+        }
+        
+        setInterval(updateTime, 1000);
+        updateTime();
+        
+        // 搜索功能
+        const searchBox = document.getElementById('search-input');
+        let searchEngine = 'google';
+        
+        searchBox.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                const searchText = encodeURIComponent(searchBox.value.trim());
+                if (searchText) {
+                    let searchUrl;
+                    switch(searchEngine) {
+                        case 'google':
+                            searchUrl = `https://www.google.com/search?q=${searchText}`;
+                            break;
+                        case 'bing':
+                            searchUrl = `https://www.bing.com/search?q=${searchText}`;
+                            break;
+                        case 'baidu':
+                            searchUrl = `https://www.baidu.com/s?wd=${searchText}`;
+                            break;
+                        case 'duckduckgo':
+                            searchUrl = `https://duckduckgo.com/?q=${searchText}`;
+                            break;
+                    }
+                    window.location.href = searchUrl;
+                }
+            }
+        });
+        
+        // 搜索选项下拉菜单
+        const searchOptions = document.getElementById('search-options');
+        const searchDropdown = document.getElementById('search-dropdown');
+        
+        searchOptions.addEventListener('click', function(e) {
+            e.stopPropagation();
+            searchDropdown.classList.toggle('show');
+        });
+        
+        // 选择搜索引擎
+        const engineItems = document.querySelectorAll('.dropdown-item');
+        engineItems.forEach(item => {
+            item.addEventListener('click', function(e) {
+                e.stopPropagation(); // 阻止事件冒泡
+                engineItems.forEach(i => i.classList.remove('active'));
+                this.classList.add('active');
+                searchEngine = this.getAttribute('data-engine');
+                searchDropdown.classList.remove('show');
+            });
+        });
+        
+        // 关闭下拉菜单当点击其他地方时
+        document.addEventListener('click', function(e) {
+            if (!searchOptions.contains(e.target) && !searchDropdown.contains(e.target)) {
+                searchDropdown.classList.remove('show');
+            }
+        });
+        
+        // 背景数据 - 使用可靠的图片和视频源
+        const backgrounds = [
+            { 
+                type: 'image', 
+                url: 'https://images.unsplash.com/photo-1506744038136-46273834b3fb', 
+                name: '山脉' 
+            },
+            { 
+                type: 'image', 
+                url: 'https://images.unsplash.com/photo-1518837695005-2083093ee35b', 
+                name: '星空' 
+            },
+            { 
+                type: 'image', 
+                url: 'https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05', 
+                name: '自然' 
+            },
+            { 
+                type: 'image', 
+                url: 'https://images.unsplash.com/photo-1465146344425-f00d5f5c8f07', 
+                name: '森林' 
+            },
+            { 
+                type: 'image', 
+                url: 'https://images.unsplash.com/photo-1505765050516-f72dcac9c60e', 
+                name: '城市' 
+            },
+            { 
+                type: 'video', 
+                url: 'https://assets.mixkit.co/videos/preview/mixkit-aerial-view-of-a-winding-road-through-a-forest-43709-large.mp4', 
+                name: '森林道路' 
+            },
+            { 
+                type: 'video', 
+                url: 'https://assets.mixkit.co/videos/preview/mixkit-aerial-view-of-seashore-with-rocks-1096-large.mp4', 
+                name: '海浪' 
+            }
+        ];
+        
+        let currentBackground = 0;
+        const backgroundContainer = document.getElementById('background-container');
+        const backgroundToggle = document.getElementById('background-toggle');
+        
+        // 设置初始背景
+        setBackground(currentBackground);
+        
+        function setBackground(index) {
+            const background = backgrounds[index];
+            backgroundContainer.innerHTML = '<div class="overlay"></div>';
+            
+            if (background.type === 'image') {
+                const img = document.createElement('img');
+                img.src = background.url;
+                img.alt = 'Background Image';
+                backgroundContainer.prepend(img);
+            } else if (background.type === 'video') {
+                const video = document.createElement('video');
+                video.src = background.url;
+                video.autoplay = true;
+                video.loop = true;
+                video.muted = true;
+                video.playsInline = true;
+                backgroundContainer.prepend(video);
+            }
+            
+            // 更新缩略图选中状态
+            const thumbnails = document.querySelectorAll('.bg-thumbnail');
+            thumbnails.forEach((thumb, idx) => {
+                if (idx === index) {
+                    thumb.classList.add('active');
+                } else {
+                    thumb.classList.remove('active');
+                }
+            });
+        }
+        
+        // 切换背景
+        backgroundToggle.addEventListener('click', function() {
+            currentBackground = (currentBackground + 1) % backgrounds.length;
+            setBackground(currentBackground);
+        });
+        
+        // 网站数据
+        let websites = [
+            { name: 'Google', url: 'https://www.google.com', icon: 'https://www.google.com/favicon.ico' },
+            { name: 'YouTube', url: 'https://www.youtube.com', icon: 'https://www.youtube.com/favicon.ico' },
+            { name: 'GitHub', url: 'https://www.github.com', icon: 'https://github.com/favicon.ico' },
+            { name: 'Twitter', url: 'https://www.twitter.com', icon: 'https://abs.twimg.com/favicons/twitter.ico' },
+            { name: 'Spotify', url: 'https://www.spotify.com', icon: 'https://open.scdn.co/favicon.ico' },
+            { name: 'Reddit', url: 'https://www.reddit.com', icon: 'https://www.redditstatic.com/favicon.ico' },
+            { name: 'Amazon', url: 'https://www.amazon.com', icon: 'https://www.amazon.com/favicon.ico' },
+            { name: 'Gmail', url: 'https://mail.google.com', icon: 'https://mail.google.com/favicon.ico' }
+        ];
+        
+        // 从本地存储加载网站数据
+        function loadWebsites() {
+            const savedWebsites = localStorage.getItem('websites');
+            if (savedWebsites) {
+                websites = JSON.parse(savedWebsites);
+            }
+            renderWebsites();
+        }
+        
+        // 保存网站数据到本地存储
+        function saveWebsites() {
+            localStorage.setItem('websites', JSON.stringify(websites));
+        }
+        
+        // 渲染网站图标
+        function renderWebsites() {
+            const websitesContainer = document.getElementById('websites');
+            websitesContainer.innerHTML = '';
+            
+            websites.forEach((site, index) => {
+                const websiteEl = document.createElement('div');
+                websiteEl.className = 'website';
+                websiteEl.innerHTML = `
+                    <div class="website-edit" data-index="${index}">
+                        <i class="fas fa-pencil-alt"></i>
+                    </div>
+                    <div class="website-icon">
+                        ${site.icon.startsWith('http') ? 
+                            `<img src="${site.icon}" alt="${site.name}">` : 
+                            `<i class="${site.icon}"></i>`
+                        }
+                    </div>
+                    <div class="website-name">${site.name}</div>
+                `;
+                
+                websiteEl.addEventListener('click', function(e) {
+                    if (!e.target.closest('.website-edit')) {
+                        window.open(site.url, '_self');
+                    }
+                });
+                
+                const editBtn = websiteEl.querySelector('.website-edit');
+                editBtn.addEventListener('click', function() {
+                    openEditModal(index);
+                });
+                
+                websitesContainer.appendChild(websiteEl);
+            });
+        }
+        
+        // 初始化网站
+        loadWebsites();
+        
+        // 自定义面板功能
+        const customizeToggle = document.getElementById('customize-toggle');
+        const customizationPanel = document.getElementById('customization-panel');
+        const panelToggle = document.getElementById('panel-toggle');
+        
+        customizeToggle.addEventListener('click', function() {
+            customizationPanel.classList.toggle('open');
+        });
+        
+        panelToggle.addEventListener('click', function() {
+            customizationPanel.classList.toggle('open');
+        });
+        
+        // 生成背景缩略图
+        const bgThumbnailsContainer = document.getElementById('bg-thumbnails');
+        backgrounds.forEach((bg, index) => {
+            const thumb = document.createElement('div');
+            thumb.className = 'bg-thumbnail';
+            if (index === currentBackground) thumb.classList.add('active');
+            
+            if (bg.type === 'image') {
+                thumb.innerHTML = `<img src="${bg.url}" alt="${bg.name}">`;
+            } else {
+                thumb.innerHTML = `<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:#6c5ce7;"><i class="fas fa-video"></i></div>`;
+            }
+            
+            thumb.addEventListener('click', function() {
+                currentBackground = index;
+                setBackground(currentBackground);
+            });
+            
+            bgThumbnailsContainer.appendChild(thumb);
+        });
+        
+        // 编辑网站模态框
+        const editModal = document.getElementById('edit-modal');
+        const editModalClose = document.getElementById('edit-modal-close');
+        const editCancel = document.getElementById('edit-cancel');
+        const editSave = document.getElementById('edit-save');
+        let editingIndex = -1;
+        
+        function openEditModal(index) {
+            editingIndex = index;
+            const site = websites[index];
+            
+            document.getElementById('edit-name').value = site.name;
+            document.getElementById('edit-url').value = site.url;
+            document.getElementById('edit-icon').value = site.icon;
+            
+            editModal.classList.add('show');
+        }
+        
+        function closeEditModal() {
+            editModal.classList.remove('show');
+        }
+        
+        editModalClose.addEventListener('click', closeEditModal);
+        editCancel.addEventListener('click', closeEditModal);
+        
+        editSave.addEventListener('click', function() {
+            const name = document.getElementById('edit-name').value;
+            const url = document.getElementById('edit-url').value;
+            const icon = document.getElementById('edit-icon').value;
+            
+            if (name && url && icon) {
+                websites[editingIndex] = { name, url, icon };
+                saveWebsites();
+                renderWebsites();
+                closeEditModal();
+            } else {
+                alert('请填写所有字段');
+            }
+        });
+        
+        // 点击模态框外部关闭
+        editModal.addEventListener('click', function(e) {
+            if (e.target === editModal) {
+                closeEditModal();
+            }
+        });
+        
+        // 模糊和透明度控制
+        const blurRange = document.getElementById('blur-range');
+        const opacityRange = document.getElementById('opacity-range');
+        
+        blurRange.addEventListener('input', function() {
+            document.documentElement.style.setProperty('--blur-strength', `blur(${this.value}px)`);
+        });
+        
+        opacityRange.addEventListener('input', function() {
+            const opacityValue = this.value / 100;
+            document.documentElement.style.setProperty('--primary-color', `rgba(255, 255, 255, ${opacityValue})`);
+            document.documentElement.style.setProperty('--secondary-color', `rgba(255, 255, 255, ${opacityValue * 0.75})`);
+            document.documentElement.style.setProperty('--hover-color', `rgba(255, 255, 255, ${opacityValue * 1.5})`);
+        });
+        
+        // 自定义背景上传功能
+        const bgUpload = document.getElementById('bg-upload');
+        const addBgBtn = document.getElementById('add-bg-btn');
+        
+        addBgBtn.addEventListener('click', function() {
+            bgUpload.click();
+        });
+        
+        bgUpload.addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            
+            const fileType = file.type.split('/')[0];
+            if (fileType !== 'image' && fileType !== 'video') {
+                alert('请选择图片或视频文件');
+                return;
+            }
+            
+            const url = URL.createObjectURL(file);
+            backgrounds.push({
+                type: fileType,
+                url: url,
+                name: '自定义背景'
+            });
+            
+            // 创建新的缩略图
+            const thumb = document.createElement('div');
+            thumb.className = 'bg-thumbnail';
+            
+            if (fileType === 'image') {
+                thumb.innerHTML = `<img src="${url}" alt="自定义背景">`;
+            } else {
+                thumb.innerHTML = `<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:#6c5ce7;"><i class="fas fa-video"></i></div>`;
+            }
+            
+            const newIndex = backgrounds.length - 1;
+            thumb.addEventListener('click', function() {
+                currentBackground = newIndex;
+                setBackground(currentBackground);
+            });
+            
+            bgThumbnailsContainer.appendChild(thumb);
+            
+            alert('自定义背景已添加！');
+        });
+        
+        // 图标选择功能
+        const logoIcon = document.getElementById('logo-icon');
+        const iconModal = document.getElementById('icon-modal');
+        const iconModalClose = document.getElementById('icon-modal-close');
+        const iconCancel = document.getElementById('icon-cancel');
+        const iconSave = document.getElementById('icon-save');
+        const iconGrid = document.getElementById('icon-grid');
+        const customIconUrl = document.getElementById('custom-icon-url');
+        
+        // 预设图标列表
+        const iconOptions = [
+            'fa-compass', 'fa-star', 'fa-globe', 'fa-rocket', 'fa-paper-plane',
+            'fa-sun', 'fa-moon', 'fa-cloud', 'fa-bolt', 'fa-leaf',
+            'fa-fire', 'fa-diamond', 'fa-heart', 'fa-puzzle-piece', 'fa-cube',
+            'fa-code', 'fa-terminal', 'fa-search', 'fa-map-marker', 'fa-flag',
+            'fa-music', 'fa-camera', 'fa-gamepad', 'fa-book', 'fa-coffee'
+        ];
+        
+        // 渲染图标选择网格
+        function renderIconOptions() {
+            iconGrid.innerHTML = '';
+            iconOptions.forEach(icon => {
+                const iconEl = document.createElement('div');
+                iconEl.className = 'icon-option';
+                iconEl.innerHTML = `<i class="fas ${icon}"></i>`;
+                iconEl.setAttribute('data-icon', icon);
+                
+                iconEl.addEventListener('click', function() {
+                    document.querySelectorAll('.icon-option').forEach(el => {
+                        el.classList.remove('selected');
+                    });
+                    this.classList.add('selected');
+                    customIconUrl.value = ''; // 清除自定义URL
+                });
+                
+                iconGrid.appendChild(iconEl);
+            });
+        }
+        
+        // 打开图标选择模态框
+        logoIcon.addEventListener('click', function() {
+            renderIconOptions();
+            customIconUrl.value = '';
+            iconModal.classList.add('show');
+        });
+        
+        // 关闭图标选择模态框
+        function closeIconModal() {
+            iconModal.classList.remove('show');
+        }
+        
+        iconModalClose.addEventListener('click', closeIconModal);
+        iconCancel.addEventListener('click', closeIconModal);
+        
+        // 保存图标选择
+        iconSave.addEventListener('click', function() {
+            const selectedIcon = document.querySelector('.icon-option.selected');
+            let iconValue = '';
+            
+            if (selectedIcon) {
+                iconValue = selectedIcon.getAttribute('data-icon');
+                logoIcon.className = `fas ${iconValue} logo-icon`;
+                localStorage.setItem('customLogoIcon', iconValue);
+                closeIconModal();
+            } else if (customIconUrl.value.trim()) {
+                // 如果用户提供了自定义图标URL
+                // 我们需要替换i标签为img标签
+                logoIcon.outerHTML = `<img src="${customIconUrl.value}" class="logo-icon" style="width: 36px; height: 36px; border-radius: 50%;" alt="Custom logo icon">`;
+                localStorage.setItem('customLogoIcon', 'url:' + customIconUrl.value);
+                closeIconModal();
+                // 更新logoIcon引用
+                logoIcon = document.querySelector('.logo-icon');
+                logoIcon.addEventListener('click', function() {
+                    renderIconOptions();
+                    customIconUrl.value = '';
+                    iconModal.classList.add('show');
+                });
+            } else {
+                alert('请选择一个图标或输入自定义图标URL');
+            }
+        });
+        
+        // 点击模态框外部关闭
+        iconModal.addEventListener('click', function(e) {
+            if (e.target === iconModal) {
+                closeIconModal();
+            }
+        });
+        
+        // 加载保存的图标设置
+        function loadCustomIcon() {
+            const savedIcon = localStorage.getItem('customLogoIcon');
+            if (savedIcon) {
+                if (savedIcon.startsWith('url:')) {
+                    const iconUrl = savedIcon.substring(4);
+                    logoIcon.outerHTML = `<img src="${iconUrl}" class="logo-icon" style="width: 36px; height: 36px; border-radius: 50%;" alt="Custom logo icon">`;
+                    logoIcon = document.querySelector('.logo-icon');
+                    logoIcon.addEventListener('click', function() {
+                        renderIconOptions();
+                        customIconUrl.value = '';
+                        iconModal.classList.add('show');
+                    });
+                } else {
+                    logoIcon.className = `fas ${savedIcon} logo-icon`;
+                }
+            }
+        }
+        
+        // 添加一些动画效果
+        document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(() => {
+                document.body.style.opacity = 1;
+            }, 100);
+            
+            // 加载保存的图标设置
+            loadCustomIcon();
+        });
+    </script>
+</body>
+</html>
